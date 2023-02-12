@@ -2,6 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_gallery/modules/gallery/controller/gallery_controller.dart';
+import 'package:simple_gallery/modules/photo_viewer/controller/photo_viewer_controller.dart';
 
 import 'models/photo_list_response_model.dart';
 import 'modules/log_in/screen/log_in_screen.dart';
@@ -13,6 +14,9 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (_) => GalleryController(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => PhotoViewerController(),
     )
   ], child: const MyApp()));
 }

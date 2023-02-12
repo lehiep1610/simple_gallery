@@ -2,21 +2,17 @@ part of 'gallery_screen.dart';
 
 extension _GalleryScreenChildren on GalleryScreen {
   Widget photosGridView({required BuildContext context}) {
-    // return GestureDetector(
-    //   onTap: () {
-    //     context.read<GalleryController>().getListPhoto();
-    //   },
-    //   child: Center(
-    //     child: Container(
-    //       child: Text('Click here'),
-    //     ),
-    //   ),
-    // );
     return GridView.builder(
-      controller: context.watch<GalleryController>().scrollController,
+      controller: context.read<GalleryController>().scrollController,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: ((context) => PhotoViewerScreen(index: index)),
+              ),
+            );
+          },
           child: _imageBox(
               photo: context.watch<GalleryController>().photoList[index],
               width: AppConstant.galleryThumbnailSize,
