@@ -1,16 +1,27 @@
-part of 'gallery_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-extension _GalleryScreenChildren on GalleryScreen {
-  Widget photosGridView({required BuildContext context}) {
+import '../../../constant/app_constant.dart';
+import '../../../constant/image_constant.dart';
+import '../../../models/photo_list_response_model.dart';
+import '../../photo_viewer/screen/photo_viewer_screen.dart';
+import '../controller/gallery_controller.dart';
+import '../../../utils/Image_mixin.dart';
+
+class AllPhotoPage extends StatelessWidget with ImageMixin {
+  const AllPhotoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return GridView.builder(
       controller: context.read<GalleryController>().scrollController,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: ((context) => PhotoViewerScreen(index: index)),
-              ),
+            context.read<GalleryController>().photoIndex = index;
+            Navigator.of(context).pushNamed(
+              PhotoViewerScreen.routeName,
             );
           },
           child: _imageBox(

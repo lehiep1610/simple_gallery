@@ -8,4 +8,5 @@ class AppConstant {
   static const hasNextPageKey = 'hasNextPage';
   static const photoListBox = 'photoListBox';
   static const photoGalleryBox = 'photoGalleryBox';
+  static const photoFavoriteBox = 'photoFavoriteBox';
 }

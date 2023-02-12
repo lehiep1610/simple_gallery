@@ -1,28 +1,33 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_gallery/constant/image_constant.dart';
-import 'package:simple_gallery/models/photo_list_response_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../constant/app_constant.dart';
 import '../../../utils/Image_mixin.dart';
-import '../../photo_viewer/screen/photo_viewer_screen.dart';
 import '../controller/gallery_controller.dart';
-
-part 'gallery_screen_children.dart';
+import '../page/account_page.dart';
+import '../page/all_photo_page.dart';
+import '../page/favorite_page.dart';
 
 class GalleryScreen extends StatefulWidget with ImageMixin {
   const GalleryScreen({super.key});
+  static const routeName = '/galleryScreen';
 
   @override
   State<GalleryScreen> createState() => _GalleryScreenState();
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  late GalleryController galleryController;
+  final screen = [
+    const AllPhotoPage(),
+    const FavoritePage(),
+    const AccountPage()
+  ];
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<GalleryController>(context, listen: false).initGallery();
+      galleryController =
+          Provider.of<GalleryController>(context, listen: false);
+      galleryController.initGallery();
     });
     super.initState();
   }
@@ -31,9 +36,32 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: context.watch<GalleryController>().isLoading
-            ? const CircularProgressIndicator()
-            : widget.photosGridView(context: context),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Photo gallery'),
+        ),
+        body: screen[context.watch<GalleryController>().tabIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: context.watch<GalleryController>().tabIndex,
+          type: BottomNavigationBarType.fixed,
+          onTap: (currentIndex) {
+            galleryController.onChangeView(index: currentIndex);
+          },
+          items: const [
+            BottomNavigationBarItem(
+              label: 'Gallery',
+              icon: Icon(Icons.home),
+            ),
+            BottomNavigationBarItem(
+              label: 'Favorite',
+              icon: Icon(Icons.favorite_sharp),
+            ),
+            BottomNavigationBarItem(
+              label: 'Account',
+              icon: Icon(Icons.manage_accounts),
+            ),
+          ],
+        ),
       ),
     );
   }
