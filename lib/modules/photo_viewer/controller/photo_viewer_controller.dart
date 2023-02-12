@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import '../../../constant/app_constant.dart';
+import '../../../models/photo_list_response_model.dart';
 
 class PhotoViewerController with ChangeNotifier {
   final transformationController = TransformationController();
@@ -10,20 +14,15 @@ class PhotoViewerController with ChangeNotifier {
 
   void reset() {
     transformationController.value = Matrix4.identity();
+    userHasZoomIn();
   }
 
-  void onTapFavorite() {
+  void onTapFavorite(Photo photo) {
     isFavorite = !isFavorite;
-    notifyListeners();
-  }
 
-  void onLeftSwipe() {
-    photoIndex++;
-    notifyListeners();
-  }
-
-  void onRightSwipe() {
-    photoIndex--;
+    //store to DB
+    var photoFavoriteBox = Hive.box<Photo>(AppConstant.photoFavoriteBox);
+    photoFavoriteBox.add(photo);
     notifyListeners();
   }
 
@@ -54,9 +53,11 @@ class PhotoViewerController with ChangeNotifier {
   }
 
   bool userHasZoomIn() {
-    return (Matrix4.identity() - transformationController.value)
-            .infinityNorm() >
-        0.000001;
+    isZooming =
+        (Matrix4.identity() - transformationController.value).infinityNorm() >
+            0.000001;
+    notifyListeners();
+    return isZooming;
   }
 
   @override

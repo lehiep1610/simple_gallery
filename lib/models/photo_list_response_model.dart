@@ -20,6 +20,8 @@ class Photo {
   String? url;
   @HiveField(5)
   String? downloadUrl;
+  @HiveField(6)
+  bool? isFavorite;
 
   Photo({
     this.id,
@@ -28,6 +30,7 @@ class Photo {
     this.height,
     this.url,
     this.downloadUrl,
+    this.isFavorite = false,
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {

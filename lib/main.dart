@@ -2,7 +2,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_gallery/modules/gallery/controller/gallery_controller.dart';
+import 'package:simple_gallery/modules/gallery/screen/gallery_screen.dart';
 import 'package:simple_gallery/modules/photo_viewer/controller/photo_viewer_controller.dart';
+import 'package:simple_gallery/modules/photo_viewer/screen/photo_viewer_screen.dart';
 
 import 'models/photo_list_response_model.dart';
 import 'modules/log_in/screen/log_in_screen.dart';
@@ -26,9 +28,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF000000),
+      ),
       debugShowCheckedModeBanner: false,
-      home: LogInScreen(),
+      home: const LogInScreen(),
+      routes: {
+        GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+        PhotoViewerScreen.routeName: (ctx) => const PhotoViewerScreen(),
+      },
     );
   }
 }

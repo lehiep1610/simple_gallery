@@ -23,13 +23,14 @@ class PhotoAdapter extends TypeAdapter<Photo> {
       height: fields[3] as int?,
       url: fields[4] as String?,
       downloadUrl: fields[5] as String?,
+      isFavorite: fields[6] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Photo obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class PhotoAdapter extends TypeAdapter<Photo> {
       ..writeByte(4)
       ..write(obj.url)
       ..writeByte(5)
-      ..write(obj.downloadUrl);
+      ..write(obj.downloadUrl)
+      ..writeByte(6)
+      ..write(obj.isFavorite);
   }
 
   @override
