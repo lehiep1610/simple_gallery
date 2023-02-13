@@ -113,32 +113,6 @@ class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
                   ),
                 )
               : const SizedBox(),
-
-          //const Spacer(),
-
-          // const Spacer(),
-          // !context.watch<PhotoViewerController>().isZooming
-          //     ? GestureDetector(
-          //         onTap: () {
-          //           photoViewerController.onTapFavorite();
-          //         },
-          //         child: Container(
-          //           width: 40,
-          //           height: 40,
-          //           decoration: BoxDecoration(
-          //             borderRadius: BorderRadius.circular(20),
-          //             color: Colors.grey[900],
-          //           ),
-          //           child:
-          //               !context.watch<PhotoViewerController>().isFavorite
-          //                   ? const Icon(Icons.favorite_border_sharp)
-          //                   : Icon(
-          //                       Icons.favorite,
-          //                       color: Colors.red[300],
-          //                     ),
-          //         ),
-          //       )
-          //     : const SizedBox(),
         ),
       ),
     );

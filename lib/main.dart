@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: const LogInScreen(),
+      builder: EasyLoading.init(),
       routes: {
         GalleryScreen.routeName: (ctx) => const GalleryScreen(),
         PhotoViewerScreen.routeName: (ctx) => const PhotoViewerScreen(),
