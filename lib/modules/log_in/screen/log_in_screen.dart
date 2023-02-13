@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_gallery/constant/icon_constant.dart';
+import 'package:simple_gallery/modules/gallery/controller/gallery_controller.dart';
+import 'package:simple_gallery/modules/log_in/controller/log_in_controller.dart';
 
 import '../../gallery/screen/gallery_screen.dart';
 
@@ -10,7 +13,7 @@ class LogInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.grey[900],
         body: Center(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -31,37 +34,12 @@ class LogInScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 25),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black45),
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12.0)),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none, hintText: 'Email'),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black45),
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12.0)),
-                  child: const TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Password',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 25),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: ((context) => const GalleryScreen())));
+                    Provider.of<GalleryController>(context, listen: false)
+                        .reset();
+                    Navigator.of(context)
+                        .pushReplacementNamed(GalleryScreen.routeName);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -70,7 +48,7 @@ class LogInScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25.0)),
                     child: const Center(
                       child: Text(
-                        'Sign in',
+                        'Sign in as GUEST',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -86,50 +64,65 @@ class LogInScreen extends StatelessWidget {
                     Expanded(
                         child: Divider(
                       endIndent: 10,
-                      color: Colors.black87,
+                      color: Colors.grey,
                     )),
                     Text(
                       "or",
                       style: TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.black54),
+                          fontWeight: FontWeight.w500, color: Colors.grey),
                     ),
                     Expanded(
                         child: Divider(
                       indent: 10,
-                      color: Colors.black87,
+                      color: Colors.grey,
                     )),
                   ]),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black54),
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(25.0)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: Image.asset(IconConstants.ic_logo_google,
-                              fit: BoxFit.contain)),
-                      const SizedBox(width: 10),
-                      const Text(
-                        'Sign in with Google',
-                        style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                GestureDetector(
+                  onTap: () async {
+                    final loginController =
+                        Provider.of<LoginController>(context, listen: false);
+                    await loginController.googleLogIn();
+                    if (context.mounted) {
+                      if (loginController.user != null) {
+                        Provider.of<GalleryController>(context, listen: false)
+                            .reset();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: ((context) => const GalleryScreen())));
+                      }
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black54),
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(25.0)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                            width: 26,
+                            height: 26,
+                            child: Image.asset(IconConstants.ic_logo_google,
+                                fit: BoxFit.contain)),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'Sign in with Google',
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const Spacer(),
                 RichText(
                   text: const TextSpan(
-                    style: TextStyle(color: Colors.black, fontSize: 15),
+                    style: TextStyle(color: Colors.grey, fontSize: 15),
                     children: [
                       TextSpan(text: 'Do not have account? '),
                       TextSpan(

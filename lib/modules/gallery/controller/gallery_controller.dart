@@ -168,6 +168,13 @@ class GalleryController with ChangeNotifier {
     notifyListeners();
   }
 
+  void reset() {
+    currentCategory = Category.All;
+    _currentTabIndex = 0;
+    _photoList.clear();
+    _photoFavoriteList.clear();
+  }
+
   @override
   void dispose() {
     Hive.close();
