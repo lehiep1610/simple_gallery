@@ -5,11 +5,14 @@ import 'package:simple_gallery/modules/gallery/controller/gallery_controller.dar
 import 'package:simple_gallery/modules/gallery/screen/gallery_screen.dart';
 import 'package:simple_gallery/modules/photo_viewer/controller/photo_viewer_controller.dart';
 import 'package:simple_gallery/modules/photo_viewer/screen/photo_viewer_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'models/photo_list_response_model.dart';
 import 'modules/log_in/screen/log_in_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await Hive.initFlutter();
   Hive.registerAdapter(PhotoAdapter());
 
