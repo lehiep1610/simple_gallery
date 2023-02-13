@@ -17,15 +17,6 @@ class PhotoViewerController with ChangeNotifier {
     userHasZoomIn();
   }
 
-  void onTapFavorite(Photo photo) {
-    isFavorite = !isFavorite;
-
-    //store to DB
-    var photoFavoriteBox = Hive.box<Photo>(AppConstant.photoFavoriteBox);
-    photoFavoriteBox.add(photo);
-    notifyListeners();
-  }
-
   String detectSwipeDirection({required PointerMoveEvent moveEvent}) {
     if (userHasZoomIn()) {
       return swipeDirection = '';

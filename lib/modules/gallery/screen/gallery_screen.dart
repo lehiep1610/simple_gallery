@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_gallery/modules/log_in/controller/log_in_controller.dart';
 
 import '../../../utils/Image_mixin.dart';
 import '../controller/gallery_controller.dart';
@@ -27,7 +28,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       galleryController =
           Provider.of<GalleryController>(context, listen: false);
-      galleryController.initGallery();
+      galleryController
+          .initGallery(context.read<LoginController>().user?.id ?? '');
     });
     super.initState();
   }

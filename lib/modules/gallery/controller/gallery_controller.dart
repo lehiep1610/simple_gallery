@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:simple_gallery/constant/app_constant.dart';
 import 'package:hive/hive.dart';
 
@@ -22,10 +23,10 @@ class GalleryController with ChangeNotifier {
   bool removedPhoto = false;
   int _currentTabIndex = 0;
   int get tabIndex => _currentTabIndex;
-  bool isLoading = false;
   Category currentCategory = Category.All;
   int pageNumber = 0;
   bool hasNextPage = true;
+  String userId = '';
 
   GalleryController() {
     _scrollController.addListener(() {
@@ -40,9 +41,11 @@ class GalleryController with ChangeNotifier {
 
   Future<void> getListPhoto({bool checkDB = false}) async {
     try {
-      isLoading = true;
-      var photoListBox = await Hive.openBox<Photo>(AppConstant.photoListBox);
-      var photoGalleryBox = await Hive.openBox(AppConstant.photoGalleryBox);
+      EasyLoading.show();
+      var photoListBox =
+          await Hive.openBox<Photo>('${AppConstant.photoListBox}$userId');
+      var photoGalleryBox =
+          await Hive.openBox('${AppConstant.photoGalleryBox}$userId');
 
       // check if have response cache
       if (checkDB && photoListBox.values.isNotEmpty) {
@@ -50,7 +53,6 @@ class GalleryController with ChangeNotifier {
 
         hasNextPage = photoGalleryBox.get(AppConstant.hasNextPageKey);
         pageNumber = photoGalleryBox.get(AppConstant.nextPageNumberKey);
-        isLoading = false;
         notifyListeners();
         return;
       }
@@ -79,15 +81,16 @@ class GalleryController with ChangeNotifier {
         print(e.toString());
       }
     } finally {
-      isLoading = false;
+      EasyLoading.dismiss();
       notifyListeners();
     }
   }
 
   Future<void> getFavoritePhoto() async {
     try {
+      EasyLoading.show();
       var photoFavoriteBox =
-          await Hive.openBox<Photo>(AppConstant.photoFavoriteBox);
+          await Hive.openBox<Photo>('${AppConstant.photoFavoriteBox}$userId');
       if (photoFavoriteBox.values.isNotEmpty) {
         _photoFavoriteList.addAll(photoFavoriteBox.values);
         notifyListeners();
@@ -96,6 +99,8 @@ class GalleryController with ChangeNotifier {
       if (kDebugMode) {
         print(e.toString());
       }
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 
@@ -104,23 +109,24 @@ class GalleryController with ChangeNotifier {
     photoList[index].isFavorite = !photoList[index].isFavorite!;
     if (photoList[index].isFavorite == true) {
       _photoFavoriteList.add(_photoList[index]);
-      await Hive.box<Photo>(AppConstant.photoFavoriteBox)
+      await Hive.box<Photo>('${AppConstant.photoFavoriteBox}$userId')
           .add(_photoList[index]);
-      await Hive.box<Photo>(AppConstant.photoListBox)
+      await Hive.box<Photo>('${AppConstant.photoListBox}$userId')
           .putAt(index, _photoList[index]);
       removedPhoto = false;
     } else {
       if (currentCategory == Category.All) {
-        await Hive.box<Photo>(AppConstant.photoListBox)
+        await Hive.box<Photo>('${AppConstant.photoListBox}$userId')
             .putAt(index, _photoList[index]);
-        await Hive.box<Photo>(AppConstant.photoFavoriteBox)
+        await Hive.box<Photo>('${AppConstant.photoFavoriteBox}$userId')
             .deleteAt(getIndex(index));
         _photoFavoriteList
             .removeWhere((photo) => _photoList[index].id == photo.id);
       } else {
-        await Hive.box<Photo>(AppConstant.photoListBox)
+        await Hive.box<Photo>('${AppConstant.photoListBox}$userId')
             .putAt(getIndex(index), _photoFavoriteList[index]);
-        await Hive.box<Photo>(AppConstant.photoFavoriteBox).deleteAt(index);
+        await Hive.box<Photo>('${AppConstant.photoFavoriteBox}$userId')
+            .deleteAt(index);
         _photoFavoriteList.removeAt(index);
       }
       removedPhoto = true;
@@ -131,8 +137,9 @@ class GalleryController with ChangeNotifier {
   // convert index between two list
   int getIndex(int index) {
     Photo? photo = currentCategory == Category.All
-        ? Hive.box<Photo>(AppConstant.photoListBox).getAt(index)
-        : Hive.box<Photo>(AppConstant.photoFavoriteBox).getAt(index);
+        ? Hive.box<Photo>('${AppConstant.photoListBox}$userId').getAt(index)
+        : Hive.box<Photo>('${AppConstant.photoFavoriteBox}$userId')
+            .getAt(index);
     List<Photo> listPhoto =
         currentCategory == Category.All ? _photoFavoriteList : _photoList;
 
@@ -144,7 +151,8 @@ class GalleryController with ChangeNotifier {
     return -1;
   }
 
-  void initGallery() {
+  void initGallery(String id) {
+    userId = id;
     getListPhoto(checkDB: true);
     getFavoritePhoto();
   }
